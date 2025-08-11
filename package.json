@@ -1,0 +1,16 @@
+{
+  "name": "cover-letter-cli",
+  "version": "1.0.0",
+  "description": "A CLI tool for generating cover letters",
+  "type": "module",
+  "main": "src/index.mjs",
+  "bin": {
+    "cover-letter": "bin/cover-letter.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["cli", "cover-letter", "generator"],
+  "author": "Görkem Özkan",
+  "license": "MIT"
+} 
