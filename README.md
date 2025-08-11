@@ -1,6 +1,6 @@
 # Cover Letter Generator
 
-Simple CLI tool to generate cover letters.
+Node.js CLI tool for generating professional cover letters.
 
 ## Usage
 
