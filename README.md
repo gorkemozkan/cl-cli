@@ -1,17 +1,20 @@
 # Cover Letter CLI
 
-A modular Node.js CLI tool for generating professional cover letters in markdown format.
+A modular Node.js CLI tool for generating professional cover letters with enhanced validation, configuration management, and error handling.
 
-## Features
+## ✨ Features
 
 - 📝 Interactive command-line interface
 - 🎯 Smart defaults and placeholders
-- ✅ Input validation with fallbacks
-- 📁 Automatic filename generation
-- 🌍 Unicode-safe file naming
-- 📄 Markdown output format
+- ✅ Comprehensive input validation with sanitization
+- 📁 Automatic filename generation with Unicode-safe naming
+- 🌍 Multiple export formats (Markdown, Plain Text, Email)
+- ⚙️ Configuration management with file and environment variable support
+- 🛡️ Robust error handling with user-friendly messages
+- 🧪 Comprehensive test suite
+- 📊 Performance optimizations
 
-## Installation
+## 🚀 Installation
 
 ### Global Installation
 ```bash
@@ -23,9 +26,9 @@ npm install -g .
 npm install
 ```
 
-## Usage
+## 📖 Usage
 
-### Run the CLI
+### Basic Usage
 ```bash
 cover-letter
 ```
@@ -34,131 +37,161 @@ cover-letter
 
 The CLI will prompt you for the following information:
 
-| Field | Default | Description |
-|-------|---------|-------------|
-| Full Name | Görkem Özkan | Your full name |
-| Phone Number | +90 0542 353 73 35 | Your contact number |
-| Email Address | developer@ozgorkem.com | Your email (validated) |
-| Company Name | - | Target company name |
-| Contact Name | - | Hiring manager/HR contact |
-| Platform | - | Job platform (LinkedIn, Indeed, etc.) |
-| Date | Today's date | Letter date |
-| Export Format | md | Output format (md/txt/email) |
-| Output Filename | Auto-generated | Output file name |
+| Field | Default | Validation |
+|-------|---------|------------|
+| Full Name | Configurable | Required, trimmed |
+| Phone Number | Configurable | 7-15 digits, international format |
+| Email Address | Configurable | Email format validation |
+| Company Name | - | Sanitized, max 100 chars |
+| Contact Name | - | Sanitized, max 50 chars |
+| Platform | - | Trimmed |
+| Date | Today's date | Configurable format |
+| Export Format | md | md/txt/email |
+| Output Filename | Auto-generated | Safe filename |
 
 ### Export Formats
-
-The CLI supports three export formats:
 
 - **Markdown (md)**: Rich formatting with headers and bold text
 - **Plain Text (txt)**: Simple text format for basic editors
 - **Email Format (email)**: Optimized for email clients with subject line and signature
 
-### Smart Features
+## ⚙️ Configuration
 
-- **Email Validation**: Invalid emails trigger a warning and fall back to default
-- **Placeholder Fallbacks**: Empty fields use meaningful placeholders:
-  - Company: `[Company Name]`
-  - Contact: `[Name of the person concerned / Human Resources Officer]`
-  - Platform: `[Platform]`
-  - Date: `[Date]`
-- **Auto-filename**: Generates `cover-letter_<company>_<YYYY-MM-DD>.<extension>`
-- **Safe Naming**: Unicode-safe, 60-character limit, special character handling
-- **Multiple Formats**: Support for .md, .txt, and email-optimized formats
+### Configuration Files
 
-## Project Structure
+The application supports multiple configuration sources:
+
+1. **Local config**: `cover-letter.config.json` in current directory
+2. **Hidden config**: `.cover-letter.json` in current directory
+3. **Global config**: `~/.cover-letter.json` in user home directory
+
+### Example Configuration
+
+```json
+{
+  "defaults": {
+    "fullName": "Your Name",
+    "phone": "+1 555 123 4567",
+    "email": "your.email@example.com",
+    "format": "md"
+  },
+  "placeholders": {
+    "company": "[Company Name]",
+    "contactName": "[Hiring Manager Name]",
+    "platform": "[Job Platform]",
+    "date": "[Date]"
+  },
+  "validation": {
+    "maxCompanyNameLength": 100,
+    "maxContactNameLength": 50,
+    "maxFilenameLength": 60,
+    "minPhoneDigits": 7,
+    "maxPhoneDigits": 15
+  }
+}
+```
+
+### Environment Variables
+
+You can also configure defaults using environment variables:
+
+```bash
+export COVER_LETTER_NAME="Your Name"
+export COVER_LETTER_PHONE="+1 555 123 4567"
+export COVER_LETTER_EMAIL="your.email@example.com"
+export COVER_LETTER_FORMAT="md"
+```
+
+## 🧪 Testing
+
+### Run Tests
+```bash
+npm test
+```
+
+### Watch Mode
+```bash
+npm run test:watch
+```
+
+### Coverage Report
+```bash
+npm run test:coverage
+```
+
+### Test Format Generation
+```bash
+npm run test:format
+```
+
+## 🏗️ Project Structure
 
 ```
 cover-letter-cli/
-├── package.json          # ESM configuration and metadata
+├── package.json                 # Project configuration
+├── cover-letter.config.example.json  # Example configuration
 ├── bin/
-│   └── cover-letter.mjs  # CLI entry point
-└── src/
-    ├── constants.mjs     # Defaults and placeholders
-    ├── format.mjs        # Date and file formatting utilities
-    ├── validators.mjs    # Input validation functions
-    ├── file.mjs          # File operations and naming
-    ├── template.mjs      # Cover letter template builder
-    └── cli.mjs           # Interactive CLI interface
+│   └── cover-letter.mjs        # CLI entry point
+├── src/
+│   ├── config.mjs              # Configuration management
+│   ├── constants.mjs           # Legacy constants (deprecated)
+│   ├── errors.mjs              # Error handling and validation
+│   ├── format.mjs              # Date and file formatting utilities
+│   ├── validators.mjs          # Input validation functions
+│   ├── file.mjs                # File operations and naming
+│   ├── template.mjs            # Cover letter template builder
+│   └── cli.mjs                 # Interactive CLI interface
+├── tests/
+│   ├── validators.test.mjs     # Validator unit tests
+│   └── template.test.mjs       # Template generation tests
+└── test-formats.mjs            # Format testing script
 ```
 
-## Module Documentation
+## 📚 Module Documentation
 
-### `bin/cover-letter.mjs`
-Tiny orchestrator that coordinates the CLI flow:
-- Runs interactive prompts
-- Builds the cover letter
-- Handles file writing
-- Error handling and exit codes
+### `src/config.mjs`
+Configuration management with support for:
+- File-based configuration (JSON)
+- Environment variables
+- Default fallbacks
+- Caching for performance
 
-### `src/constants.mjs`
-Centralized configuration:
-- `DEFAULTS`: Default values for all fields
-- `PLACEHOLDERS`: Fallback text for empty inputs
-
-### `src/format.mjs`
-Utility functions:
-- `todayISO()`: Returns current date in YYYY-MM-DD format
-- `safeFilePart(text, maxLength)`: Creates safe filenames from text
+### `src/errors.mjs`
+Comprehensive error handling:
+- Custom error classes
+- User-friendly error messages
+- Context-aware error handling
+- Input validation utilities
 
 ### `src/validators.mjs`
-Input validation utilities:
-- `nonEmptyOr(value, fallback)`: Returns value or fallback
-- `optionalString(value)`: Safely extracts string values
-- `isEmailLike(email)`: Validates email format
-
-### `src/file.mjs`
-File system operations:
-- `suggestFilename(company)`: Generates filename with company and date
-- `ensureDirAndWrite(filepath, content)`: Creates directories and writes files
+Input validation and sanitization:
+- Email validation
+- Phone number validation
+- String sanitization
+- Format validation
 
 ### `src/template.mjs`
-Cover letter generation:
-- `buildLetter(answers)`: Creates cover letter in selected format from user inputs
-- Supports markdown, plain text, and email formats
-- Handles all placeholder substitutions
-- Maintains consistent formatting across formats
+Template generation with:
+- Shared template data builder
+- Multiple format support
+- Input validation integration
+- Backward compatibility
 
 ### `src/cli.mjs`
-Interactive interface:
-- `runCLI()`: Main CLI function with readline prompts
-- Format selection with validation
-- Input validation and user feedback
-- Graceful error handling
+Interactive interface with:
+- Enhanced input validation
+- Configuration integration
+- Error handling
+- User feedback
 
-## Output Format
+### `src/file.mjs`
+File operations with:
+- Safe file writing
+- Directory creation
+- Error handling
+- Configuration integration
 
-The generated cover letter follows this markdown structure:
-
-```markdown
-# Cover Letter
-
-**Your Name**  
-Phone Number  
-Email Address
-
----
-
-Date
-
-Contact Name  
-Company Name
-
-Dear Contact Name,
-
-[Cover letter content...]
-
-**Kind regards,**
-
-Your Name
-```
-
-## Requirements
-
-- Node.js >= 18
-- ESM modules support
-
-## Development
+## 🔧 Development
 
 ### Running Locally
 ```bash
@@ -170,10 +203,53 @@ node bin/cover-letter.mjs
 chmod +x bin/cover-letter.mjs
 ```
 
-## License
+### Linting
+```bash
+npm run lint
+npm run lint:fix
+```
+
+## 🚨 Error Handling
+
+The application provides comprehensive error handling:
+
+- **Validation Errors**: User-friendly messages with field-specific guidance
+- **File System Errors**: Permission and disk space error detection
+- **Configuration Errors**: Clear feedback on config file issues
+- **Graceful Degradation**: Fallbacks for missing or invalid data
+
+## 📊 Performance Improvements
+
+- **Lazy Loading**: Configuration loaded only when needed
+- **Caching**: Configuration cached after first load
+- **Efficient File Operations**: Optimized directory creation and file writing
+- **Memory Management**: Proper cleanup of resources
+
+## 🔒 Security Features
+
+- **Input Sanitization**: Prevents XSS and injection attacks
+- **File Path Validation**: Safe filename generation
+- **Error Information Control**: Debug info only in development mode
+
+## 📈 Code Quality
+
+- **Test Coverage**: Comprehensive unit tests
+- **Error Boundaries**: Graceful error handling throughout
+- **Type Safety**: Proper validation and sanitization
+- **Modular Design**: Clean separation of concerns
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure all tests pass
+5. Submit a pull request
+
+## 📄 License
 
 MIT License - see package.json for details.
 
-## Author
+## 👨‍💻 Author
 
 Görkem Özkan - developer@ozgorkem.com 

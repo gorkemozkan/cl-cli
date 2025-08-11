@@ -2,11 +2,13 @@ export const DEFAULTS = {
   fullName: 'Görkem Özkan',
   phone: '+90 0542 353 73 35',
   email: 'developer@ozgorkem.com',
-  dateDisplay: new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  }),
+  get dateDisplay() {
+    return new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  },
   format: 'md'
 };
 

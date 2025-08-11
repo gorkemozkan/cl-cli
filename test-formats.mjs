@@ -1,5 +1,6 @@
 import { buildLetter } from './src/template.mjs';
 import { ensureDirAndWrite } from './src/file.mjs';
+import { displayError } from './src/errors.mjs';
 
 const sampleData = {
   fullName: 'Görkem Özkan',
@@ -17,15 +18,38 @@ async function testAllFormats() {
   const formats = ['md', 'txt', 'email'];
   
   for (const format of formats) {
-    const data = { ...sampleData, format };
-    const letter = buildLetter(data);
-    const filename = `test-${format}-format.${format === 'md' ? 'md' : 'txt'}`;
-    
-    await ensureDirAndWrite(filename, letter);
-    console.log(`✅ Generated ${format.toUpperCase()} format: ${filename}`);
+    try {
+      const data = { ...sampleData, format };
+      console.log(`📝 Generating ${format.toUpperCase()} format...`);
+      
+      const letter = await buildLetter(data);
+      const filename = `test-${format}-format.${format === 'md' ? 'md' : 'txt'}`;
+      
+      await ensureDirAndWrite(filename, letter);
+      console.log(`✅ Generated ${format.toUpperCase()} format: ${filename}`);
+      console.log(`📊 File size: ${(letter.length / 1024).toFixed(2)} KB\n`);
+    } catch (error) {
+      const errorInfo = displayError(error, { 
+        context: `Testing ${format} format`,
+        filepath: `test-${format}-format.${format === 'md' ? 'md' : 'txt'}`
+      });
+      
+      if (errorInfo.shouldExit) {
+        process.exit(errorInfo.exitCode);
+      }
+    }
   }
   
-  console.log('\n📄 All test files generated successfully!');
+  console.log('📄 All test files generated successfully!');
 }
 
-testAllFormats().catch(console.error); 
+// Handle process interruptions gracefully
+process.on('SIGINT', () => {
+  console.log('\n\n⚠️  Testing cancelled by user.');
+  process.exit(0);
+});
+
+testAllFormats().catch((error) => {
+  const errorInfo = displayError(error, { context: 'Test Runner' });
+  process.exit(errorInfo.exitCode);
+}); 
