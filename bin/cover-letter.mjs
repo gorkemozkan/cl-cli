@@ -7,26 +7,21 @@ import { displayError } from '../src/errors.mjs';
 
 async function main() {
   try {
-    console.log('🚀 Starting Cover Letter Generator...\n');
+    console.log('Starting Cover Letter Generator...\n');
     
-    // Get user inputs
     const answers = await runCLI();
     
-    // Build the letter
-    console.log('📝 Generating cover letter...');
+    console.log('Generating cover letter...');
     const letter = await buildLetter(answers);
     
-    // Generate filename if not provided
     const filename = answers.filename || await suggestFilename(answers.company, answers.format);
     
-    // Write the file
-    console.log('💾 Saving file...');
+    console.log('Saving file...');
     await ensureDirAndWrite(filename, letter);
     
-    // Success message
-    console.log(`\n✅ Cover letter saved to: ${filename}`);
-    console.log(`📄 Format: ${answers.format.toUpperCase()}`);
-    console.log(`📊 File size: ${(letter.length / 1024).toFixed(2)} KB`);
+    console.log(`\nCover letter saved to: ${filename}`);
+    console.log(`Format: ${answers.format.toUpperCase()}`);
+    console.log(`File size: ${(letter.length / 1024).toFixed(2)} KB`);
     
   } catch (error) {
     const errorInfo = displayError(error, { 
@@ -40,20 +35,18 @@ async function main() {
   }
 }
 
-// Handle process interruptions gracefully
 process.on('SIGINT', () => {
-  console.log('\n\n⚠️  Operation cancelled by user.');
+  console.log('\n\nOperation cancelled by user.');
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
-  console.log('\n\n⚠️  Process terminated.');
+  console.log('\n\nProcess terminated.');
   process.exit(0);
 });
 
-// Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ Unhandled Promise Rejection:', reason);
+  console.error('Unhandled Promise Rejection:', reason);
   process.exit(1);
 });
 

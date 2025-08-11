@@ -1,4 +1,3 @@
-// Custom error classes for better error handling
 export class CoverLetterError extends Error {
   constructor(message, code = 'UNKNOWN_ERROR') {
     super(message);
@@ -31,7 +30,6 @@ export class ConfigurationError extends CoverLetterError {
   }
 }
 
-// Error message templates
 export const ERROR_MESSAGES = {
   VALIDATION: {
     INVALID_EMAIL: 'Invalid email format. Please provide a valid email address.',
@@ -56,7 +54,6 @@ export const ERROR_MESSAGES = {
   }
 };
 
-// Error handler with user-friendly messages
 export function handleError(error, context = {}) {
   let userMessage = 'An unexpected error occurred.';
   let shouldExit = true;
@@ -95,7 +92,6 @@ export function handleError(error, context = {}) {
       break;
   }
 
-  // Add context information if available
   if (context.filepath) {
     userMessage += `\nFile: ${context.filepath}`;
   }
@@ -111,14 +107,13 @@ export function handleError(error, context = {}) {
   };
 }
 
-// Graceful error display
 export function displayError(error, context = {}) {
   const errorInfo = handleError(error, context);
   
-  console.error(`❌ ${errorInfo.message}`);
+  console.error(`Error: ${errorInfo.message}`);
   
   if (process.env.NODE_ENV === 'development') {
-    console.error('\n🔍 Debug information:');
+    console.error('\nDebug information:');
     console.error(`Error: ${error.name}: ${error.message}`);
     console.error(`Stack: ${error.stack}`);
   }
@@ -126,7 +121,6 @@ export function displayError(error, context = {}) {
   return errorInfo;
 }
 
-// Input validation with specific error messages
 export function validateInput(value, type, field) {
   switch (type) {
     case 'email':

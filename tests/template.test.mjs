@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { buildLetter, buildMarkdownLetter, buildPlainTextLetter, buildEmailLetter } from '../src/template.mjs';
 
-// Mock the config module
 vi.mock('../src/config.mjs', () => ({
   getConfig: vi.fn().mockResolvedValue({
     defaults: {
@@ -165,21 +164,17 @@ describe('Template Generation', () => {
     it('should include all required sections', async () => {
       const result = await buildLetter(sampleData);
       
-      // Header section
       expect(result).toContain('John Doe');
       expect(result).toContain('+1 555 123 4567');
       expect(result).toContain('john.doe@example.com');
       
-      // Date and recipient
       expect(result).toContain('January 15, 2024');
       expect(result).toContain('Jane Smith');
       expect(result).toContain('TechCorp Inc');
       
-      // Body content
       expect(result).toContain('I am writing to express my interest');
       expect(result).toContain('LinkedIn');
       
-      // Signature
       expect(result).toContain('John Doe');
     });
   });

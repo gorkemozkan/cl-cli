@@ -26,7 +26,7 @@ async function displayFormatOptions() {
   const config = await getConfig();
   const exportFormats = config.exportFormats;
   
-  console.log('\n📄 Available Export Formats:');
+  console.log('\nAvailable Export Formats:');
   Object.entries(exportFormats).forEach(([key, format]) => {
     console.log(`  ${key}: ${format.name} - ${format.description}`);
   });
@@ -41,14 +41,14 @@ async function validateAndSanitizeInput(value, type, field, defaultValue = '') {
     switch (type) {
       case 'email':
         if (finalValue && !isEmailLike(finalValue)) {
-          console.log('⚠️  Warning: Invalid email format. Using default email.');
+          console.log('Warning: Invalid email format. Using default email.');
           return defaultValue;
         }
         return finalValue;
         
       case 'phone':
         if (finalValue && !isValidPhoneNumber(finalValue)) {
-          console.log('⚠️  Warning: Invalid phone number format. Using default phone.');
+          console.log('Warning: Invalid phone number format. Using default phone.');
           return defaultValue;
         }
         return finalValue;
@@ -62,7 +62,7 @@ async function validateAndSanitizeInput(value, type, field, defaultValue = '') {
       case 'format':
         const validFormats = ['md', 'txt', 'email'];
         if (finalValue && !validFormats.includes(finalValue)) {
-          console.log(`⚠️  Warning: Invalid format. Using ${defaultValue} format.`);
+          console.log(`Warning: Invalid format. Using ${defaultValue} format.`);
           return defaultValue;
         }
         return finalValue;
@@ -71,7 +71,7 @@ async function validateAndSanitizeInput(value, type, field, defaultValue = '') {
         return finalValue;
     }
   } catch (error) {
-    console.log(`⚠️  Warning: Error processing ${field}. Using default value.`);
+    console.log(`Warning: Error processing ${field}. Using default value.`);
     return defaultValue;
   }
 }
@@ -80,13 +80,11 @@ export async function runCLI() {
   const rl = createInterface();
   
   try {
-    console.log('📝 Cover Letter Generator\n');
+    console.log('Cover Letter Generator\n');
     
-    // Load configuration
     const config = await getConfig();
     const defaults = config.defaults;
     
-    // Get user inputs with validation
     const fullName = await question(rl, 'Full Name', defaults.fullName);
     const phone = await question(rl, 'Phone Number', defaults.phone);
     const email = await question(rl, 'Email Address', defaults.email);
@@ -95,11 +93,9 @@ export async function runCLI() {
     const platform = await question(rl, 'Platform (e.g., LinkedIn, Indeed)');
     const dateDisplay = await question(rl, 'Date', defaults.dateDisplay);
     
-    // Display format options and get user choice
     await displayFormatOptions();
     const format = await question(rl, 'Export Format (md/txt/email)', defaults.format);
     
-    // Validate and sanitize all inputs
     const validatedData = {
       fullName: await validateAndSanitizeInput(fullName, 'text', 'fullName', defaults.fullName),
       phone: await validateAndSanitizeInput(phone, 'phone', 'phone', defaults.phone),
@@ -111,7 +107,6 @@ export async function runCLI() {
       format: await validateAndSanitizeInput(format, 'format', 'format', defaults.format)
     };
     
-    // Generate filename
     const suggestedFilename = suggestFilename(validatedData.company, validatedData.format);
     const filename = await question(rl, 'Output Filename', suggestedFilename);
     

@@ -2,7 +2,6 @@ import { readFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-// Default configuration
 const DEFAULT_CONFIG = {
   defaults: {
     fullName: 'Görkem Özkan',
@@ -42,7 +41,6 @@ const DEFAULT_CONFIG = {
   }
 };
 
-// Load configuration from file if it exists
 async function loadConfigFile() {
   const configPaths = [
     join(process.cwd(), 'cover-letter.config.json'),
@@ -56,7 +54,7 @@ async function loadConfigFile() {
         const configContent = await readFile(configPath, 'utf8');
         return JSON.parse(configContent);
       } catch (error) {
-        console.warn(`⚠️  Warning: Could not load config from ${configPath}: ${error.message}`);
+        console.warn(`Warning: Could not load config from ${configPath}: ${error.message}`);
       }
     }
   }
@@ -64,7 +62,6 @@ async function loadConfigFile() {
   return {};
 }
 
-// Merge environment variables with config
 function mergeEnvVars(config) {
   const envConfig = {};
   
@@ -84,7 +81,6 @@ function mergeEnvVars(config) {
   return envConfig;
 }
 
-// Deep merge function
 function deepMerge(target, source) {
   const result = { ...target };
   
@@ -99,7 +95,6 @@ function deepMerge(target, source) {
   return result;
 }
 
-// Load and merge configuration
 let cachedConfig = null;
 
 export async function getConfig() {
@@ -112,19 +107,19 @@ export async function getConfig() {
   
   cachedConfig = deepMerge(DEFAULT_CONFIG, deepMerge(fileConfig, envConfig));
   
-  // Add computed properties
-  cachedConfig.defaults.get dateDisplay() {
-    return new Date().toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+  Object.defineProperty(cachedConfig.defaults, 'dateDisplay', {
+    get() {
+      return new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+  });
   
   return cachedConfig;
 }
 
-// Export individual config sections for backward compatibility
 export async function getDefaults() {
   const config = await getConfig();
   return config.defaults;

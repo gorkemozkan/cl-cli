@@ -2,19 +2,16 @@ import { getConfig } from './config.mjs';
 import { nonEmptyOr, sanitizeCompanyName, sanitizeContactName } from './validators.mjs';
 import { validateInput } from './errors.mjs';
 
-// Shared template data builder
 async function buildTemplateData(answers) {
   const config = await getConfig();
   const defaults = config.defaults;
   const placeholders = config.placeholders;
 
-  // Validate and sanitize inputs
   const fullName = validateInput(answers.fullName || defaults.fullName, 'required', 'fullName');
   const phone = validateInput(answers.phone || defaults.phone, 'phone', 'phone');
   const email = validateInput(answers.email || defaults.email, 'email', 'email');
   const format = validateInput(answers.format || defaults.format, 'format', 'format');
   
-  // Sanitize optional fields
   const company = sanitizeCompanyName(answers.company);
   const contactName = sanitizeContactName(answers.contactName);
   const platform = optionalString(answers.platform);
@@ -32,12 +29,10 @@ async function buildTemplateData(answers) {
   };
 }
 
-// Helper function for optional string validation
 function optionalString(value) {
   return value && typeof value === 'string' ? value.trim() : '';
 }
 
-// Template content configuration
 const TEMPLATE_CONTENT = {
   markdown: {
     header: (data) => `# Cover Letter\n\n**${data.fullName}**  \n${data.phone}  \n${data.email}\n\n---\n\n${data.dateDisplay}\n\n${data.contactName}  \n${data.company}\n\nDear ${data.contactName},\n\n`,
@@ -56,14 +51,12 @@ const TEMPLATE_CONTENT = {
   }
 };
 
-// Build letter content based on format
 function buildLetterContent(data, format) {
   const template = TEMPLATE_CONTENT[format] || TEMPLATE_CONTENT.markdown;
   
   return template.header(data) + template.body(data) + template.footer(data);
 }
 
-// Legacy function names for backward compatibility
 async function buildMarkdownLetter(answers) {
   const data = await buildTemplateData(answers);
   return buildLetterContent(data, 'markdown');
@@ -79,7 +72,6 @@ async function buildEmailLetter(answers) {
   return buildLetterContent(data, 'email');
 }
 
-// Main export function
 export async function buildLetter(answers) {
   const data = await buildTemplateData(answers);
   
@@ -94,5 +86,4 @@ export async function buildLetter(answers) {
   }
 }
 
-// Export legacy functions for backward compatibility
 export { buildMarkdownLetter, buildPlainTextLetter, buildEmailLetter }; 

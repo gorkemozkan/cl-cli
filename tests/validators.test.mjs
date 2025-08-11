@@ -64,8 +64,8 @@ describe('Validators', () => {
     });
 
     it('should reject invalid phone numbers', () => {
-      expect(isValidPhoneNumber('123')).toBe(false); // Too short
-      expect(isValidPhoneNumber('12345678901234567890')).toBe(false); // Too long
+      expect(isValidPhoneNumber('123')).toBe(false);
+      expect(isValidPhoneNumber('12345678901234567890')).toBe(false);
       expect(isValidPhoneNumber('')).toBe(false);
       expect(isValidPhoneNumber(null)).toBe(false);
       expect(isValidPhoneNumber(undefined)).toBe(false);

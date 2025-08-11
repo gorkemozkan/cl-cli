@@ -13,21 +13,21 @@ const sampleData = {
 };
 
 async function testAllFormats() {
-  console.log('🧪 Testing all export formats...\n');
+  console.log('Testing all export formats...\n');
   
   const formats = ['md', 'txt', 'email'];
   
   for (const format of formats) {
     try {
       const data = { ...sampleData, format };
-      console.log(`📝 Generating ${format.toUpperCase()} format...`);
+      console.log(`Generating ${format.toUpperCase()} format...`);
       
       const letter = await buildLetter(data);
       const filename = `test-${format}-format.${format === 'md' ? 'md' : 'txt'}`;
       
       await ensureDirAndWrite(filename, letter);
-      console.log(`✅ Generated ${format.toUpperCase()} format: ${filename}`);
-      console.log(`📊 File size: ${(letter.length / 1024).toFixed(2)} KB\n`);
+      console.log(`Generated ${format.toUpperCase()} format: ${filename}`);
+      console.log(`File size: ${(letter.length / 1024).toFixed(2)} KB\n`);
     } catch (error) {
       const errorInfo = displayError(error, { 
         context: `Testing ${format} format`,
@@ -40,12 +40,11 @@ async function testAllFormats() {
     }
   }
   
-  console.log('📄 All test files generated successfully!');
+  console.log('All test files generated successfully!');
 }
 
-// Handle process interruptions gracefully
 process.on('SIGINT', () => {
-  console.log('\n\n⚠️  Testing cancelled by user.');
+  console.log('\n\nTesting cancelled by user.');
   process.exit(0);
 });
 

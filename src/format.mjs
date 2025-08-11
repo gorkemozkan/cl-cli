@@ -7,11 +7,11 @@ export function safeFilePart(text, maxLength = 60) {
   
   return text
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-    .replace(/[^\w\s.-]/g, '') // Keep only letters, numbers, spaces, dots, underscores, hyphens
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/[-.]+/g, '-') // Replace multiple dots/hyphens with single hyphen
-    .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\w\s.-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/[-.]+/g, '-')
+    .replace(/^-|-$/g, '')
     .toLowerCase()
     .substring(0, maxLength);
 } 
