@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "A CLI tool for generating cover letters",
   "type": "module",
-  "main": "src/index.mjs",
+  "main": "src/main.mjs",
   "bin": {
-    "cover-letter": "bin/cover-letter.mjs"
+    "cover-letter": "src/main.mjs"
   },
   "engines": {
     "node": ">=18"
@@ -14,16 +14,7 @@
   "author": "Görkem Özkan",
   "license": "MIT",
   "scripts": {
-    "test": "vitest",
-    "test:watch": "vitest --watch",
-    "test:coverage": "vitest --coverage",
-    "test:format": "node test-formats.mjs",
-    "lint": "eslint src/ tests/",
-    "lint:fix": "eslint src/ tests/ --fix"
-  },
-  "devDependencies": {
-    "vitest": "^1.0.0",
-    "@vitest/coverage-v8": "^1.0.0",
-    "eslint": "^8.0.0"
+    "start": "node src/main.mjs",
+    "test": "node src/main.mjs"
   }
 } 
